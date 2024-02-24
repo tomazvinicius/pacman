@@ -7,12 +7,12 @@ import pygame
 pygame.init()
 
 # Definindo constantes
-SCREEN_WIDTH = 700
-SCREEN_HEIGHT = 350
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 700
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
-BLOCK_SIZE = 40
+BLOCK_SIZE = 50
 PACMAN_SIZE = 40
 GHOST_SIZE = 40
 FPS = 80
@@ -20,15 +20,20 @@ FPS = 80
 # Labirinto representado como uma matriz de caracteres
 # W: Parede, E: Espaço vazio, .: Pontos brancos
 LABYRINTH = [
-    "WWWWWWWWWWWWWWWWWW",
-    "W................W",
-    "W.WWW..WWWWWW..W.W",
-    "W.W............W.W",
-    "W.WWWw.WWW..W....W",
-    "W...........W..W.W",
-    "WWWW...WWW.WW..W.W",
-    "W................W",
-    "WWWWWWWWWWWWWWWWWW"
+        "WWWWWWWWWWWWWWWWWWWW",
+        "W..................W",
+        "W.W.WWWWW.WWWWW.wwWW",
+        "W.W................W",
+        "W.W.W.WWEEEWW.WWW.WW",
+        "W...W.WEEEEEW..WW..W",
+        "W.W.w.WEEEEEW......W",
+        "W.W.w.WWWWWWW..WWW.W",
+        "W.W.w..............W",
+        "W.W...WWWWWWWW.WWWWW",
+        "W...W..............W",
+        "W.WWWWWW.WWWWW.WW.WW",
+        "W..........W.......W",   
+        "WWWWWWWWWWWWWWWWWWWW"
 ]
 
 # Diretório onde está a imagem do Pac-Man e dos fantasmas
@@ -267,15 +272,20 @@ while running:
                 game_over = False
                 pacman.score = 0  
                 LABYRINTH = [
-                    "WWWWWWWWWWWWWWWWWW",
-                    "W................W",
-                    "W.WWW..WWWWWW..W.W",
-                    "W.W............W.W",
-                    "W.WWWw.WWW..W....W",
-                    "W...........W..W.W",
-                    "WWWW...WWW.WW..W.W",
-                    "W................W",
-                    "WWWWWWWWWWWWWWWWWW"
+                "WWWWWWWWWWWWWWWWWWWW",
+                "W..................W",
+                "W.W.WWWWW.WWwww.wwWW",
+                "W.W................W",
+                "W.W.W.WWEEEWW.WWW.WW",
+                "W...W.WEEEEEW..WW..W",
+                "W.W.w.WEEEEEW......W",
+                "W.W.w.WWWWWWW..WWW.W",
+                "W.W.w..............W",
+                "W.W...WWWWWWWW.WWWWW",
+                "W...W..............W",
+                "W.WWWWWW.WWWWW.WW.WW",
+                "W..........W.......W",   
+                "WWWWWWWWWWWWWWWWWWWW"
                 ]
                 points = []
                 for y, row in enumerate(LABYRINTH):
