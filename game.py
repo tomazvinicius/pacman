@@ -3,6 +3,7 @@ import os
 from queue import PriorityQueue
 import pygame
 
+
 # Inicializando o Pygame
 pygame.init()
 
@@ -16,7 +17,7 @@ BLOCK_SIZE = 50
 PACMAN_SIZE = 40
 GHOST_SIZE = 40
 FPS = 80
-
+ANTIGA_POSICAO= 0
 # Labirinto representado como uma matriz de caracteres
 # W: Parede, E: Espaço vazio, .: Pontos brancos
 LABYRINTH = [
@@ -55,6 +56,7 @@ ghost_img = pygame.transform.scale(ghost_img, (GHOST_SIZE, GHOST_SIZE))
 wall_img = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE))
 wall_img.fill(WHITE)
 
+
 # Função para obter a dificuldade selecionada pelo jogador
 def get_selected_difficulty():
     while True:
@@ -64,12 +66,12 @@ def get_selected_difficulty():
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                if 275 < mouse_x < 425:
-                    if 125 < mouse_y < 175:
+                if 480 < mouse_x < 580:
+                    if 250 < mouse_y < 475:
                         return "Fácil"
-                    elif 175 < mouse_y < 225:
+                    elif 335 < mouse_y < 385:
                         return "Médio"
-                    elif 225 < mouse_y < 275:
+                    elif 425 < mouse_y < 475:
                         return "Difícil"
 
         pygame.display.flip()
@@ -108,7 +110,11 @@ class Pacman(pygame.sprite.Sprite):
         # Verificar se o próximo movimento colide com alguma parede
         collided = any(next_position.colliderect(wall_rect) for wall_rect in walls)
         if not collided:
-            self.rect = next_position
+         self.rect = next_position
+         ANTIGA_POSICAO= next_position
+       
+
+        
 
         # Atualizando a pontuação com base no tempo de sobrevivência
         self.score += 1
@@ -203,19 +209,20 @@ def show_difficulty_menu():
                 exit()
 
         screen.fill(BLACK)
-        font = pygame.font.Font(None, 36)
-        title_text = font.render("Selecione a Dificuldade", True, YELLOW)
-        screen.blit(title_text, (200, 50))
+        font_titulo = pygame.font.Font(None, 60)
+        font_text = pygame.font.Font(None, 50)
+        title_text = font_titulo.render("Selecione a Dificuldade", True, YELLOW)
+        screen.blit(title_text, (300, 150))
 
         # Desenhando opções de dificuldade
-        easy_text = font.render("Fácil", True, YELLOW)
-        screen.blit(easy_text, (300, 125))
+        easy_text = font_text.render("Fácil", True, YELLOW)
+        screen.blit(easy_text, (480, 250))
 
-        medium_text = font.render("Médio", True, YELLOW)
-        screen.blit(medium_text, (300, 175))
+        medium_text = font_text.render("Médio", True, YELLOW)
+        screen.blit(medium_text, (472, 335))
 
-        hard_text = font.render("Difícil", True, YELLOW)
-        screen.blit(hard_text, (300, 225))
+        hard_text = font_text.render("Difícil", True, YELLOW)
+        screen.blit(hard_text, (472, 425))
 
         pygame.display.flip()
 
@@ -322,7 +329,11 @@ while running:
                 pygame.draw.rect(screen, WHITE, (x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
             elif char == '.':
                 pygame.draw.circle(screen, WHITE, (x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2),
-                                   2)
+                                   5)
+        
+        
+
+
     screen.blit(pacman.image, pacman.rect)
     for ghost in ghosts:
         screen.blit(ghost.image, ghost.rect)
