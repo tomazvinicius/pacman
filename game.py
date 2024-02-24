@@ -13,7 +13,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 BLOCK_SIZE = 40
-PACMAN_SIZE = 25
+PACMAN_SIZE = 40
 GHOST_SIZE = 40
 FPS = 80
 
@@ -71,7 +71,7 @@ def get_selected_difficulty():
 
 # Definindo a classe do jogador (Pac-Man)
 class Pacman(pygame.sprite.Sprite):
-    def __init__(self, walls):  # Altere _init_ para __init__
+    def __init__(self, walls):  
         super().__init__()
         self.image = pacman_img
         self.rect = self.image.get_rect()
@@ -90,33 +90,24 @@ class Pacman(pygame.sprite.Sprite):
                 return rect.center
 
     def update(self, walls):
+        next_position = self.rect.copy()  # Definir next_position com o retângulo atual
         if self.direction == "UP":
-            self.rect.y -= self.speed
+            next_position.y -= self.speed
         elif self.direction == "DOWN":
-            self.rect.y += self.speed
+            next_position.y += self.speed
         elif self.direction == "LEFT":
-            self.rect.x -= self.speed
+            next_position.x -= self.speed
         elif self.direction == "RIGHT":
-            self.rect.x += self.speed
+            next_position.x += self.speed
 
-        # Verificando colisões com as paredes e bordas da tela
-        for wall_rect in walls:
-            if self.rect.colliderect(wall_rect):
-                if self.direction == "UP":
-                    self.rect.top = wall_rect.bottom  # Ajuste para deslizar ao longo da parede
-                elif self.direction == "DOWN":
-                    self.rect.bottom = wall_rect.top  # Ajuste para deslizar ao longo da parede
-                elif self.direction == "LEFT":
-                    self.rect.left = wall_rect.right  # Ajuste para deslizar ao longo da parede
-                elif self.direction == "RIGHT":
-                    self.rect.right = wall_rect.left  # Ajuste para deslizar ao longo da parede
-
-        # Impedindo que o Pac-Man saia da tela
-        self.rect.x = max(0, min(self.rect.x, SCREEN_WIDTH - PACMAN_SIZE))
-        self.rect.y = max(0, min(self.rect.y, SCREEN_HEIGHT - PACMAN_SIZE))
+        # Verificar se o próximo movimento colide com alguma parede
+        collided = any(next_position.colliderect(wall_rect) for wall_rect in walls)
+        if not collided:
+            self.rect = next_position
 
         # Atualizando a pontuação com base no tempo de sobrevivência
         self.score += 1
+
 
     def draw_score(self, screen):
         # Desenhar o fundo da pontuação
@@ -238,7 +229,7 @@ else:
 
 # Criando os objetos de parede
 walls = []
-points = []  # Lista para armazenar as posições dos pontos brancos
+points = []  
 for y, row in enumerate(LABYRINTH):
     for x, char in enumerate(row):
         if char == 'W':
@@ -272,10 +263,9 @@ while running:
                 pacman.direction = "LEFT"
             elif event.key == pygame.K_RIGHT:
                 pacman.direction = "RIGHT"
-            elif event.key == pygame.K_r and game_over:  # Reiniciar o jogo com a tecla R
+            elif event.key == pygame.K_r and game_over:  
                 game_over = False
-                pacman.score = 0  # Reiniciar a pontuação do Pac-Man
-                # Restaurar os pontos brancos
+                pacman.score = 0  
                 LABYRINTH = [
                     "WWWWWWWWWWWWWWWWWW",
                     "W................W",
@@ -287,37 +277,29 @@ while running:
                     "W................W",
                     "WWWWWWWWWWWWWWWWWW"
                 ]
-                # Recolocar os pontos na matriz do labirinto
                 points = []
                 for y, row in enumerate(LABYRINTH):
                     for x, char in enumerate(row):
                         if char == '.':
                             points.append((x * BLOCK_SIZE + BLOCK_SIZE // 2, y * BLOCK_SIZE + BLOCK_SIZE // 2))
 
-                # Reposicionar Pac-Man e fantasmas
                 pacman.rect.center = pacman.get_valid_start_position(walls)
                 for ghost in ghosts:
                     ghost.rect.center = ghost.get_valid_start_position(walls)
-
-        elif event.type == pygame.KEYUP:
-            pacman.direction = None
 
     if not game_over:
         pacman.update(walls)
         for ghost in ghosts:
             ghost.update(walls)
 
-        # Verificando colisão entre Pac-Man e fantasmas
         for ghost in ghosts:
             if pacman.rect.colliderect(ghost.rect):
                 game_over = True
 
-        # Verificando colisão entre Pac-Man e pontos brancos
-        for point in points[:]:  # Utilizamos uma cópia da lista para poder modificar a original
-            point_rect = pygame.Rect(point[0] - 2, point[1] - 2, 4, 4)  # Bolinhas são consideravelmente menores
+        for point in points[:]: 
+            point_rect = pygame.Rect(point[0] - 2, point[1] - 2, 4, 4)  
             if pacman.rect.colliderect(point_rect):
-                pacman.score += 10  # Aumenta a pontuação
-                # Remover ponto da lista de pontos e do labirinto
+                pacman.score += 10  
                 points.remove(point)
                 x, y = point[0] // BLOCK_SIZE, point[1] // BLOCK_SIZE
                 row = LABYRINTH[y]
@@ -335,11 +317,9 @@ while running:
     for ghost in ghosts:
         screen.blit(ghost.image, ghost.rect)
 
-    # Exibindo a pontuação na tela
     pacman.draw_score(screen)
 
     if game_over:
-        # Desenhar a caixa de diálogo do menu
         dialog_box = pygame.Rect(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.draw.rect(screen, BLACK, dialog_box)
         pygame.draw.rect(screen, YELLOW, dialog_box, 3)
@@ -359,5 +339,4 @@ while running:
     pygame.display.flip()
     clock.tick(FPS)
 
-# Finalizando o Pygame
 pygame.quit()
